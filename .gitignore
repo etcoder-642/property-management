@@ -1,0 +1,82 @@
+# =========================
+# Build outputs
+# =========================
+build/
+cmake-build-*/
+out/
+bin/
+obj/
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.exe
+*.out
+
+# =========================
+# CMake
+# =========================
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# =========================
+# Compiled Debug files
+# =========================
+*.dSYM/
+*.pdb
+
+# =========================
+# IDEs (very common)
+# =========================
+# Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+*.user
+*.VC.db
+
+# CLion / JetBrains
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Eclipse CDT
+.cproject
+.project
+.settings/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# =========================
+# Logs and temp files
+# =========================
+*.log
+*.tmp
+*.temp
+
+# =========================
+# Dependency directories (if used)
+# =========================
+vcpkg_installed/
+third_party/
+external/
+
+# =========================
+# Misc
+# =========================
+*.swp
+*.swo
+*~
