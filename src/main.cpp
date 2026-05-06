@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 
 #include "../include/display.h"
 #include "../include/property.h"
@@ -12,11 +14,12 @@ vector<string> splitString(string input, char identifier)
 {
     string section = "";
     vector<string> res;
-    for(int i = 0; i < input.size(); i++)
+    for (int i = 0; i < input.size(); i++)
     {
-        if(input[i] == identifier)
+        if (input[i] == identifier)
         {
-            if(!section.empty()) res.push_back(section);
+            if (!section.empty())
+                res.push_back(section);
             section = "";
         }
         else
@@ -24,11 +27,12 @@ vector<string> splitString(string input, char identifier)
             section += input[i];
         }
     }
-    if(!section.empty()) res.push_back(section); 
+    if (!section.empty())
+        res.push_back(section);
     return res;
 }
 
-void handleMyPropertiesSession(Owner &owner)
+void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
 {
     int myPropertiesChoice = 0;
     while (myPropertiesChoice != 7)
@@ -38,6 +42,33 @@ void handleMyPropertiesSession(Owner &owner)
         {
         case 1:
             // View Properties
+            {
+                vector<int> properties = owner.getPropertyIDs();
+                displayPropertyHeader({"LOCATION", "TYPE", "DESCRIPTION", "RENTAL VALUE", "DIMENSIONS"});
+                for (int i : properties)
+                {
+                    Property *prop = registry.propertyRegistry.getPropertyByID(i);
+                    if (prop == nullptr)
+                    {
+                        cout << "here's the problem" << endl;
+                        continue;
+                    }
+                    string tempLocation = prop->getLocation();
+                    string tempType = prop->getType();
+                    string tempDesc = prop->getDescription();
+                    vector<double> tempDimensions = prop->getDimensions();
+                    string tempDimensionStr;
+                    for (double d : tempDimensions)
+                    {
+                        ostringstream oss;
+                        oss << fixed << setprecision(1) << d;
+                        tempDimensionStr += oss.str() + " ";
+                    }
+                    double tempRentalValue = registry.propertyRegistry.getPropertyByID(i)->getRentalValue();
+                    displayProperty({tempLocation, tempType, tempDesc, to_string(tempRentalValue), tempDimensionStr});
+                }
+                pause();
+            }
             break;
         case 2:
         {
@@ -45,11 +76,12 @@ void handleMyPropertiesSession(Owner &owner)
             vector<string> dimensionsStr = splitString(newPropertyInfo[3], ' ');
             vector<double> dimensions = {stod(dimensionsStr[0]), stod(dimensionsStr[1])};
             Property newProperty(-1, -1, false, false, newPropertyInfo[0], newPropertyInfo[1], newPropertyInfo[2], dimensions, stod(newPropertyInfo[4]));
-            owner.addProperty(newProperty);
+            int id = registry.propertyRegistry.addProperty(newProperty);
+            owner.addProperty(id);
             displaySuccessMessage("Property added successfully!");
             pause();
         }
-            break;
+        break;
         case 3:
             // Remove Properties
             break;
@@ -68,7 +100,7 @@ void handleMyPropertiesSession(Owner &owner)
     }
 }
 
-void handleOwnerSession(Owner &owner)
+void handleOwnerSession(Owner &owner, AppRegistry &registry)
 {
     int ownerChoice = 0;
     while (ownerChoice != 6)
@@ -78,9 +110,9 @@ void handleOwnerSession(Owner &owner)
         {
         case 1:
         {
-            handleMyPropertiesSession(owner);
+            handleMyPropertiesSession(owner, registry);
         }
-            break;
+        break;
         case 2:
             // Add Property
             break;
@@ -96,12 +128,12 @@ void handleOwnerSession(Owner &owner)
     }
 }
 
-void handleTenantSession(Tenant &tenant)
+void handleTenantSession(Tenant &tenant, AppRegistry &registry)
 {
     int tenantChoice = 0;
     while (tenantChoice != 6)
     {
-        tenantChoice = getTenantSessionMenu(tenant  );
+        tenantChoice = getTenantSessionMenu(tenant);
         switch (tenantChoice)
         {
         case 1:
@@ -132,25 +164,27 @@ void handleLogin(int loginChoice)
     }
 }
 
-void handleRegister(int registerChoice, OwnerRegistry &ownerRegistry, TenantRegistry &tenantRegistry)
+void handleRegister(int registerChoice, AppRegistry &registry)
 {
     if (registerChoice == 1)
     {
         vector<string> ownerInfo = displayRegistry(1);
-        Owner newOwner(ownerInfo[0], ownerInfo[1], ownerInfo[2]);
-        ownerRegistry.addOwner(newOwner);
+        Owner tempOwner(ownerInfo[0], ownerInfo[1], ownerInfo[2]);
+        registry.ownerRegistry.addOwner(tempOwner);
+        int index = registry.ownerRegistry.getOwners().size() - 1;
         displaySuccessMessage("Owner registered successfully!");
         pause();
-        handleOwnerSession(newOwner);
+        handleOwnerSession(registry.ownerRegistry.getOwners()[index], registry);
     }
     else if (registerChoice == 2)
     {
         vector<string> tenantInfo = displayRegistry(2);
-        Tenant newTenant(tenantInfo[0], tenantInfo[1], tenantInfo[2]);
-        tenantRegistry.addTenant(newTenant);
+        Tenant tempTenant(tenantInfo[0], tenantInfo[1], tenantInfo[2]);
+        registry.tenantRegistry.addTenant(tempTenant);
+        int index = registry.tenantRegistry.getTenants().size() - 1;
         displaySuccessMessage("Tenant registered successfully!");
         pause();
-        handleTenantSession(newTenant);
+        handleTenantSession(registry.tenantRegistry.getTenants()[index], registry);
     }
 }
 
@@ -158,7 +192,7 @@ void handleAdmin()
 {
 }
 
-void routeMainMenuChoice(int choice, OwnerRegistry &ownerRegistry, TenantRegistry &tenantRegistry)
+void routeMainMenuChoice(int choice, AppRegistry &registry)
 {
     switch (choice)
     {
@@ -175,7 +209,7 @@ void routeMainMenuChoice(int choice, OwnerRegistry &ownerRegistry, TenantRegistr
         int registerChoice = handleRegisterUI();
         if (registerChoice == 3)
             return; // Back to main menu
-        handleRegister(registerChoice, ownerRegistry, tenantRegistry);
+        handleRegister(registerChoice, registry);
     }
     break;
     case 3:
@@ -188,15 +222,13 @@ void routeMainMenuChoice(int choice, OwnerRegistry &ownerRegistry, TenantRegistr
     }
 }
 
-
 int main()
 {
-    TenantRegistry tenantRegistry;
-    OwnerRegistry ownerRegistry;
-    int choice;
+    AppRegistry registry;
+    int choice = 0;
     while (choice != 5)
     {
         choice = initialPage();
-        routeMainMenuChoice(choice, ownerRegistry, tenantRegistry);
+        routeMainMenuChoice(choice, registry);
     }
 }

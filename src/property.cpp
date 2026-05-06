@@ -6,6 +6,6 @@
 
 using namespace std;
 
-void Owner::addProperty(const Property& property){
-    properties.push_back(property);
+void Owner::addProperty(const int& propertyID){
+    propertyIDs.push_back(propertyID);
 }

@@ -50,7 +50,7 @@ private:
     string name;
     string phoneNumber;
     string password;
-    vector<Property> properties;
+    vector<int> propertyIDs;
 public:
     Owner(string name, string phoneNumber, string password)
      : name(name), phoneNumber(phoneNumber), password(password), ownerID(-1) {}
@@ -58,13 +58,13 @@ public:
     int getOwnerID() const { return ownerID; }
     string getName() const { return name; }
     string getPhoneNumber() const { return phoneNumber; }
-    vector<Property> getProperties() const { return properties; }
+    vector<int> getPropertyIDs() const { return propertyIDs; }
 
     void setName(string newName) { name = newName; }
     void setPhoneNumber(string newPhoneNumber) { phoneNumber = newPhoneNumber; }
     void setOwnerID(int newOwnerID) { ownerID = newOwnerID; }
 
-    void addProperty(const Property& property);
+    void addProperty(const int& propertyID);
 };
 
 class Tenant {

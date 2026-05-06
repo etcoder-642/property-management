@@ -21,5 +21,7 @@ int getOwnerSessionMenu(Owner &owner);
 int getTenantSessionMenu(Tenant &tenant);
 int getMyPropertiesSession();
 vector<string> newPropertyForm();
+void displayProperty(vector<string> propertyInfo);
+void displayPropertyHeader(vector<string> propertyHeader);
 void pause();
 #endif

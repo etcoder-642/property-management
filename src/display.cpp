@@ -54,6 +54,52 @@ void printBox(string title, int width)
     // cout << "┘\n";
 }
 
+void printCell(const string& text, int colWidth, const char* color) {
+    string display = text;
+
+    if (display.size() > (size_t)colWidth - 3)
+        display = display.substr(0, colWidth - 6) + "...";
+    int padding = colWidth - 3 - display.size(); // explicit space padding
+    cout << color << " " << display;
+    for (int i = 0; i < padding; i++) cout << " ";
+    cout << " " << BORDER << "│";
+}
+
+void printSeveralInBox(vector<string> content, int width) {
+    int cols = content.size();
+    int available = width - 1; // subtract opening │
+    if(available%cols != 0)
+        available += cols - (available%cols);
+    int colWidth = available / cols;
+    int actualWidth = available + 1; // add back the opening │
+
+    cout << BORDER << "┌";
+    for (int i = 0; i < actualWidth - 2; i++) cout << "─";
+    cout << "┐\n";
+
+    cout << BORDER << "│";
+    for (string c : content) printCell(c, colWidth, TITLE);
+    cout << "\n";
+
+    cout << BORDER << "├";
+    for (int i = 0; i < actualWidth - 2; i++) cout << "─";
+    cout << "┤\n";
+}
+
+void printSeveralInOpenBox(vector<string> content, int width) {
+    int cols = content.size();
+    int available = width - 1; // subtract opening │
+    
+    // bump width up until evenly divisible
+    while (available % cols != 0) available++;
+    int colWidth = available / cols;
+    int actualWidth = available + 1; // add back the opening │
+
+    cout << BORDER << "│";
+    for (string c : content) printCell(c, colWidth, CONTENT);
+    cout << "\n";
+}
+
 void printLine(int width)
 {
     cout << BORDER << "└";
@@ -72,7 +118,7 @@ void printOpenBox(string content, int width)
 
 void pause()
 {
-    cout << DIM << "\n Press Enter to continue..." << RESET;
+    cout << DIM << "\n Press Enter to continue... " << RESET;
     cin.ignore();
 }
 
@@ -255,4 +301,14 @@ vector<string> newPropertyForm()
     string dimensions = enterMessageBoxModified("Enter property dimensions", " (length & width, ex: 10 20): ", BOX_WIDTH);
     string rentalValueStr = enterMessageBoxModified("Enter rental value", " (per month value): ", BOX_WIDTH);
     return {type, location, description, dimensions, rentalValueStr};
+}
+
+void displayPropertyHeader(vector<string> propertyHeader)
+{
+    printSeveralInBox(propertyHeader, BOX_WIDTH);
+}
+
+void displayProperty(vector<string> propertyInfo)
+{
+    printSeveralInOpenBox(propertyInfo, BOX_WIDTH);
 }

@@ -13,7 +13,8 @@ private:
 public:
     OwnerRegistry() {}
 
-    void addOwner(Owner& owner);
+    vector<Owner>& getOwners() { return owners; }
+    int addOwner(Owner& owner);
 };
 
 class TenantRegistry {
@@ -23,27 +24,36 @@ private:
 public:
    TenantRegistry() {}
 
-   void addTenant(Tenant& tenant);
+   vector<Tenant>& getTenants() { return tenants; }
+   int addTenant(Tenant& tenant);
 };
 
-class propertyRegistry {
+class PropertyRegistry {
 private:
     vector<Property> properties;
     int nextID = -1;
 public:
-    propertyRegistry() {}
+    PropertyRegistry() {}
 
-    void addProperty(Property& property);
+    int addProperty(Property& property);
+    Property* getPropertyByID(int propertyID);
 };
 
-class contractRegistry {
+class ContractRegistry {
 private:
     vector<Contract> contracts;
     int nextID = -1;
 public:
-    contractRegistry() {}
+    ContractRegistry() {}
 
-    void addContract(Contract& contract);
+    int addContract(Contract& contract);
+};
+
+struct AppRegistry {
+    OwnerRegistry ownerRegistry;
+    TenantRegistry tenantRegistry;
+    PropertyRegistry propertyRegistry;
+    ContractRegistry contractRegistry;
 };
 
 #endif // REGISTRY_H
