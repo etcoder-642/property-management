@@ -16,12 +16,12 @@ public:
     void addOwner(Owner& owner);
 };
 
-class tenantRegistry {
+class TenantRegistry {
 private:
    vector<Tenant> tenants;
    int nextID = -1;
 public:
-   tenantRegistry() {}
+   TenantRegistry() {}
 
    void addTenant(Tenant& tenant);
 };

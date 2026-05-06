@@ -11,4 +11,9 @@ void OwnerRegistry::addOwner(Owner& owner){
     owners.push_back(owner);
 }
 
+void TenantRegistry::addTenant(Tenant& tenant){
+    nextID++;
+    tenant.setTenantID(nextID);
+    tenants.push_back(tenant);
+}
 

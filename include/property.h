@@ -9,7 +9,6 @@ using namespace std;
 
 class Property {
 private:
-    string name;
     int propertyID;
     int ownerID;
     int tenantID; // will be -1 if vacant
@@ -23,10 +22,9 @@ private:
     vector<double> dimensions; // length and width for simplicity
     double rentalValue;
 public:
-    Property(string name, int ownerID, int tenantID, bool isListed, bool isRented, string type, string location, string description, vector<double> dimensions, double rentalValue)
-     : name(name), ownerID(ownerID), tenantID(tenantID), isListed(isListed), isRented(isRented), type(type), location(location), description(description), dimensions(dimensions), rentalValue(rentalValue), propertyID(-1) {}
+    Property(int ownerID, int tenantID, bool isListed, bool isRented, string type, string location, string description, vector<double> dimensions, double rentalValue)
+     : ownerID(ownerID), tenantID(tenantID), isListed(isListed), isRented(isRented), type(type), location(location), description(description), dimensions(dimensions), rentalValue(rentalValue), propertyID(-1) {}
 
-    string getName() const { return name; }
     int getPropertyID() const { return propertyID; }
     int getOwnerID() const { return ownerID; }
     int getTenantID() const { return tenantID; }
@@ -36,7 +34,6 @@ public:
     vector<double> getDimensions() const { return dimensions; }
     double getRentalValue() const { return rentalValue; }
 
-    void setName(string newName) { name = newName; }
     void setPropertyID(int newPropertyID) { propertyID = newPropertyID; }
     void setOwnerID(int newOwnerID) { ownerID = newOwnerID; }
     void setTenantID(int newTenantID) { tenantID = newTenantID; }
