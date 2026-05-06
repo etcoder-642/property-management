@@ -48,9 +48,10 @@ void handleRegister(int registerChoice, OwnerRegistry &ownerRegistry)
     if (registerChoice == 1)
     {
         vector<string> ownerInfo = handleOwnerRegistry();
-        Owner newOwner(ownerInfo[0], ownerInfo[1]);
+        Owner newOwner(ownerInfo[0], ownerInfo[1], ownerInfo[2]);
         ownerRegistry.addOwner(newOwner);
         displaySuccessMessage("Owner registered successfully!");
+        pause();
         handleOwnerSession(newOwner);
     }
     else if (registerChoice == 2)

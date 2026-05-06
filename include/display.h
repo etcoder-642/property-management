@@ -18,4 +18,5 @@ int handleLoginUI();
 int handleRegisterUI();
 void displaySuccessMessage(string message);
 int getOwnerSessionMenu(Owner &owner);
+void pause();
 #endif

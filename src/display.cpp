@@ -60,6 +60,13 @@ void printOpenBox(string content, int width)
     cout << BORDER << "│\n";
 }
 
+void pause()
+{
+    cout << DIM << "\n Press Enter to continue..." << RESET;
+    cin.ignore();
+}
+
+
 string enterMessageBox(string content, int width) {
     string message;
     // Print prompt line (no closing │, user types here)
@@ -81,7 +88,7 @@ string enterMessageBox(string content, int width) {
 
 void displaySuccessMessage(string message) 
 {
-    cout << SUCCESS << message << RESET << endl;
+    cout << SUCCESS << " " << message << RESET << endl;
 }
 
 void clearScreen() {
@@ -140,7 +147,8 @@ vector<string> handleOwnerRegistry() {
     printBox("OWNER REGISTRATION", 50);
     string name = enterMessageBox("Enter your name: ", 50);
     string password = enterMessageBox("Enter your password: ", 50);
-    return {name, password};
+    string phoneNumber = enterMessageBox("Enter your phone number: ", 50);
+    return {name, password, phoneNumber};
 }
 
 int getOwnerSessionMenu(Owner &owner)

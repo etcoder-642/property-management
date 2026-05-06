@@ -5,7 +5,9 @@
 
 using namespace std;
 
-void OwnerRegistry::addOwner(const Owner& owner){
+void OwnerRegistry::addOwner(Owner& owner){
+    nextID++;
+    owner.setOwnerID(nextID);
     owners.push_back(owner);
 }
 
