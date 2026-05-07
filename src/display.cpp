@@ -54,49 +54,58 @@ void printBox(string title, int width)
     // cout << "┘\n";
 }
 
-void printCell(const string& text, int colWidth, const char* color) {
+void printCell(const string &text, int colWidth, const char *color)
+{
     string display = text;
 
     if (display.size() > (size_t)colWidth - 3)
         display = display.substr(0, colWidth - 6) + "...";
     int padding = colWidth - 3 - display.size(); // explicit space padding
     cout << color << " " << display;
-    for (int i = 0; i < padding; i++) cout << " ";
+    for (int i = 0; i < padding; i++)
+        cout << " ";
     cout << " " << BORDER << "│";
 }
 
-void printSeveralInBox(vector<string> content, int width) {
+void printSeveralInBox(vector<string> content, int width)
+{
     int cols = content.size();
     int available = width - 1; // subtract opening │
-    if(available%cols != 0)
-        available += cols - (available%cols);
+    if (available % cols != 0)
+        available += cols - (available % cols);
     int colWidth = available / cols;
     int actualWidth = available + 1; // add back the opening │
 
     cout << BORDER << "┌";
-    for (int i = 0; i < actualWidth - 2; i++) cout << "─";
+    for (int i = 0; i < actualWidth - 2; i++)
+        cout << "─";
     cout << "┐\n";
 
     cout << BORDER << "│";
-    for (string c : content) printCell(c, colWidth, TITLE);
+    for (string c : content)
+        printCell(c, colWidth, TITLE);
     cout << "\n";
 
     cout << BORDER << "├";
-    for (int i = 0; i < actualWidth - 2; i++) cout << "─";
+    for (int i = 0; i < actualWidth - 2; i++)
+        cout << "─";
     cout << "┤\n";
 }
 
-void printSeveralInOpenBox(vector<string> content, int width) {
+void printSeveralInOpenBox(vector<string> content, int width)
+{
     int cols = content.size();
     int available = width - 1; // subtract opening │
-    
+
     // bump width up until evenly divisible
-    while (available % cols != 0) available++;
+    while (available % cols != 0)
+        available++;
     int colWidth = available / cols;
     int actualWidth = available + 1; // add back the opening │
 
     cout << BORDER << "│";
-    for (string c : content) printCell(c, colWidth, CONTENT);
+    for (string c : content)
+        printCell(c, colWidth, CONTENT);
     cout << "\n";
 }
 
@@ -311,4 +320,11 @@ void displayPropertyHeader(vector<string> propertyHeader)
 void displayProperty(vector<string> propertyInfo)
 {
     printSeveralInOpenBox(propertyInfo, BOX_WIDTH);
+}
+
+void displayPropertiesToBeRemoved(vector<string> propertyInfo)
+{
+    int i = 1;
+    string p = "[" + to_string(i) + "] " + "A " + propertyInfo[1] + " Located at " + p[0];
+    i++;
 }
