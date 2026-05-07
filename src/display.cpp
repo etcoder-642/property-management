@@ -125,6 +125,15 @@ void printOpenBox(string content, int width)
     cout << BORDER << "│\n";
 }
 
+void printSubBox(string content, int width)
+{
+    cout << BORDER << "│ " << INFO << content;
+    for (int i = 0; i < width - 3 - content.size(); i++)
+        cout << " ";
+    cout << BORDER << "│\n";
+}
+
+
 void pause()
 {
     cout << DIM << "\n Press Enter to continue... " << RESET;
@@ -177,6 +186,12 @@ void displaySuccessMessage(string message)
 {
     cout << SUCCESS << " " << message << RESET << endl;
 }
+
+void displayErrorMessage(string message)
+{
+    cout << ERROR << " " << message << RESET << endl;
+}
+
 
 void clearScreen()
 {
@@ -322,9 +337,20 @@ void displayProperty(vector<string> propertyInfo)
     printSeveralInOpenBox(propertyInfo, BOX_WIDTH);
 }
 
-void displayPropertiesToBeRemoved(vector<string> propertyInfo)
+int displayPropertiesToBeRemoved(vector<vector<string>> propertiesInfo)
 {
-    int i = 1;
-    string p = "[" + to_string(i) + "] " + "A " + propertyInfo[1] + " Located at " + p[0];
-    i++;
+    clearScreen();
+    printBox("REMOVE PROPERTY", BOX_WIDTH);
+    printSubBox("Choose the one you want to remove:", BOX_WIDTH);
+    for(int i = 0; i < propertiesInfo.size(); i++)
+    {
+       string p = "[" + to_string(i) + "] " + "A " + propertiesInfo[i][1] + " Located at " + propertiesInfo[i][0];
+       printOpenBox(p, BOX_WIDTH);
+    }
+    printLine(BOX_WIDTH);
+    cout << BORDER << "  [>] " << INPUT;
+    string choice = "";
+    getline(cin, choice);
+    int res = stoi(choice);
+    return stoi(propertiesInfo[res][5]);
 }

@@ -41,34 +41,17 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         switch (myPropertiesChoice)
         {
         case 1: // View Properties
+        {
+            // build a function to make this modular and enable usage several times
+            vector<vector<string>> propertiesInfo = registry.propertyRegistry.getPropertyFromOwner(owner);
+            displayPropertyHeader({"LOCATION", "TYPE", "DESCRIPTION", "RENTAL VALUE", "DIMENSIONS"});
+            for (vector<string> p : propertiesInfo)
             {
-                vector<int> properties = owner.getPropertyIDs();
-                displayPropertyHeader({"LOCATION", "TYPE", "DESCRIPTION", "RENTAL VALUE", "DIMENSIONS"});
-                for (int i : properties)
-                {
-                    Property *prop = registry.propertyRegistry.getPropertyByID(i);
-                    if (prop == nullptr)
-                    {
-                        cout << "here's the problem" << endl;
-                        continue;
-                    }
-                    string tempLocation = prop->getLocation();
-                    string tempType = prop->getType();
-                    string tempDesc = prop->getDescription();
-                    vector<double> tempDimensions = prop->getDimensions();
-                    string tempDimensionStr;
-                    for (double d : tempDimensions)
-                    {
-                        ostringstream oss;
-                        oss << fixed << setprecision(1) << d;
-                        tempDimensionStr += oss.str() + " ";
-                    }
-                    double tempRentalValue = registry.propertyRegistry.getPropertyByID(i)->getRentalValue();
-                    displayProperty({tempLocation, tempType, tempDesc, to_string(tempRentalValue), tempDimensionStr});
-                }
-                pause();
+                displayProperty(p);
             }
-            break;
+            pause();
+        }
+        break;
         case 2: // Add New Properties
         {
             vector<string> newPropertyInfo = newPropertyForm();
@@ -83,9 +66,16 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         break;
         case 3: // Remove Properties
         {
-            
+            vector<vector<string>> propertiesInfo = registry.propertyRegistry.getPropertyFromOwner(owner);
+            int propertyToRemove = displayPropertiesToBeRemoved(propertiesInfo);
+            if(registry.propertyRegistry.removePropertyByID(propertyToRemove)){
+                displaySuccessMessage("Successfully Removed!");
+            }else{
+                displayErrorMessage("Failed To Remove!");
+            }
+            pause();
         }
-            break;
+        break;
         case 4:
             // Edit Property
             break;

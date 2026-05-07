@@ -37,6 +37,10 @@ public:
 
     int addProperty(Property& property);
     Property* getPropertyByID(int propertyID);
+
+    bool removePropertyByID(int id);
+    vector<string> getFormattedPropertyData(int id);
+    vector<vector<string>> getPropertyFromOwner(Owner &owner);
 };
 
 class ContractRegistry {

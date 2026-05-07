@@ -23,5 +23,7 @@ int getMyPropertiesSession();
 vector<string> newPropertyForm();
 void displayProperty(vector<string> propertyInfo);
 void displayPropertyHeader(vector<string> propertyHeader);
+int displayPropertiesToBeRemoved(vector<vector<string>> propertiesInfo);
+void displayErrorMessage(string message);
 void pause();
 #endif
