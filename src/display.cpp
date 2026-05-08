@@ -24,6 +24,8 @@
 
 using namespace std;
 
+// prints a given string in a box used for titles with a given width
+
 void printBox(string title, int width)
 {
     // Top border
@@ -47,67 +49,9 @@ void printBox(string title, int width)
     for (int i = 0; i < width - 2; i++)
         cout << "─";
     cout << BORDER << "┤\n";
-
-    // // Bottom
-    // cout << "└";
-    // for (int i = 0; i < width - 2; i++) cout << "─";
-    // cout << "┘\n";
 }
 
-void printCell(const string &text, int colWidth, const char *color)
-{
-    string display = text;
-
-    if (display.size() > (size_t)colWidth - 3)
-        display = display.substr(0, colWidth - 6) + "...";
-    int padding = colWidth - 3 - display.size(); // explicit space padding
-    cout << color << " " << display;
-    for (int i = 0; i < padding; i++)
-        cout << " ";
-    cout << " " << BORDER << "│";
-}
-
-void printSeveralInBox(vector<string> content, int width)
-{
-    int cols = content.size();
-    int available = width - 1; // subtract opening │
-    if (available % cols != 0)
-        available += cols - (available % cols);
-    int colWidth = available / cols;
-    int actualWidth = available + 1; // add back the opening │
-
-    cout << BORDER << "┌";
-    for (int i = 0; i < actualWidth - 2; i++)
-        cout << "─";
-    cout << "┐\n";
-
-    cout << BORDER << "│";
-    for (string c : content)
-        printCell(c, colWidth, TITLE);
-    cout << "\n";
-
-    cout << BORDER << "├";
-    for (int i = 0; i < actualWidth - 2; i++)
-        cout << "─";
-    cout << "┤\n";
-}
-
-void printSeveralInOpenBox(vector<string> content, int width)
-{
-    int cols = content.size();
-    int available = width - 1; // subtract opening │
-
-    // bump width up until evenly divisible
-    while (available % cols != 0)
-        available++;
-    int colWidth = available / cols;
-    int actualWidth = available + 1; // add back the opening │
-
-    cout << BORDER << "│";
-    for (string c : content)
-        printCell(c, colWidth, CONTENT);
-    cout << "\n";
-}
+// prints a straight line with given width
 
 void printLine(int width)
 {
@@ -117,22 +61,18 @@ void printLine(int width)
     cout << BORDER << "┘\n";
 }
 
-void printOpenBox(string content, int width)
+// prints a string inside an openBox with given width and a given color
+// And open Box is a box with no upper and lower borders just the side borders
+
+void printOpenBox(string content, int width, string color)
 {
-    cout << BORDER << "│ " << CONTENT << content;
+    cout << BORDER << "│ " << color << content;
     for (int i = 0; i < width - 3 - content.size(); i++)
         cout << " ";
     cout << BORDER << "│\n";
 }
 
-void printSubBox(string content, int width)
-{
-    cout << BORDER << "│ " << INFO << content;
-    for (int i = 0; i < width - 3 - content.size(); i++)
-        cout << " ";
-    cout << BORDER << "│\n";
-}
-
+// pauses code execution
 
 void pause()
 {
@@ -140,26 +80,18 @@ void pause()
     cin.ignore();
 }
 
+// a function to collect a message from the user using getLine. 
+
 string enterMessageBox(string content, int width)
 {
     string message;
     // Print prompt line (no closing │, user types here)
     cout << BORDER << "│ " << INPUT << content << " ";
     getline(cin, message);
-
-    // Move cursor up 1 line, move to column `width`, draw closing │
-    cout << "\033[1A"               // up 1 line
-         << "\033[" << width << "G" // move to column = width
-         << BORDER << "│\n";        // close the right wall
-
-    // Print a clean divider after to maintain box illusion
-    cout << BORDER << "├";
-    for (int i = 0; i < width - 2; i++)
-        cout << "─";
-    cout << BORDER << "┤\n";
-
     return message;
 }
+
+// a function to collect a message from the user using getLine. 
 
 string enterMessageBoxModified(string mainContent, string secondaryContent, int width)
 {
@@ -167,31 +99,24 @@ string enterMessageBoxModified(string mainContent, string secondaryContent, int 
     // Print prompt line (no closing │, user types here)
     cout << BORDER << "│ " << INPUT << mainContent << DIM << secondaryContent << RESET << " ";
     getline(cin, message);
-
-    // Move cursor up 1 line, move to column `width`, draw closing │
-    cout << "\033[1A"               // up 1 line
-         << "\033[" << width << "G" // move to column = width
-         << BORDER << "│\n";        // close the right wall
-
-    // Print a clean divider after to maintain box illusion
-    cout << BORDER << "├";
-    for (int i = 0; i < width - 2; i++)
-        cout << "─";
-    cout << BORDER << "┤\n";
-
     return message;
 }
+
+// displays a string message using a success color
 
 void displaySuccessMessage(string message)
 {
     cout << SUCCESS << " " << message << RESET << endl;
 }
 
+// displays an error message with a red color
+
 void displayErrorMessage(string message)
 {
     cout << ERROR << " " << message << RESET << endl;
 }
 
+// clearn the entire screen for the next session
 
 void clearScreen()
 {
@@ -202,16 +127,17 @@ void clearScreen()
 #endif
 }
 
+// the initial page users will see when entering the program
+
 int initialPage()
 {
     clearScreen();
     string userChoice;
     printBox("PROPERTY MANAGEMENT SYSTEM", BOX_WIDTH);
-    printOpenBox("[1] Log In", BOX_WIDTH);
-    printOpenBox("[2] Register", BOX_WIDTH);
-    printOpenBox("[3] Log In as Admin", BOX_WIDTH);
-    printOpenBox("[4] About the System", BOX_WIDTH);
-    printOpenBox("[5] Exit", BOX_WIDTH);
+    printOpenBox("[1] Log In", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Register", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] Log In as Admin", BOX_WIDTH, CONTENT);
+    printOpenBox("[4] Exit", BOX_WIDTH, CONTENT);
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     getline(cin, userChoice);
@@ -224,9 +150,9 @@ int handleLoginUI()
     clearScreen();
     string choice;
     printBox("LOGIN", BOX_WIDTH);
-    printOpenBox("[1] Login as Owner", BOX_WIDTH);
-    printOpenBox("[2] Login as a Tenant", BOX_WIDTH);
-    printOpenBox("[3] Back", BOX_WIDTH);
+    printOpenBox("[1] Login as Owner", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Login as a Tenant", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] Back", BOX_WIDTH, CONTENT);
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     getline(cin, choice);
@@ -239,9 +165,9 @@ int handleRegisterUI()
     clearScreen();
     string choice;
     printBox("REGISTER", BOX_WIDTH);
-    printOpenBox("[1] Register as Owner", BOX_WIDTH);
-    printOpenBox("[2] Register as a Tenant", BOX_WIDTH);
-    printOpenBox("[3] Back", BOX_WIDTH);
+    printOpenBox("[1] Register as Owner", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Register as a Tenant", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] Back", BOX_WIDTH, CONTENT);
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     getline(cin, choice);
@@ -256,8 +182,7 @@ vector<string> displayRegistry(int registerChoice)
     printBox(role + " REGISTRATION", BOX_WIDTH);
     string name = enterMessageBox("Enter your name: ", BOX_WIDTH);
     string password = enterMessageBox("Enter your password: ", BOX_WIDTH);
-    string phoneNumber = enterMessageBox("Enter your phone number: ", BOX_WIDTH);
-    return {name, password, phoneNumber};
+    return {name, password};
 }
 
 int getOwnerSessionMenu(Owner &owner)
@@ -265,12 +190,11 @@ int getOwnerSessionMenu(Owner &owner)
     string choice;
     clearScreen();
     printBox("WELCOME, " + owner.getName(), BOX_WIDTH);
-    printOpenBox("[1] My Properties", BOX_WIDTH);
-    printOpenBox("[2] Applications Inbox", BOX_WIDTH);
-    printOpenBox("[3] View Contracts", BOX_WIDTH);
-    printOpenBox("[4] Earnings Overview", BOX_WIDTH);
-    printOpenBox("[5] Update Profile", BOX_WIDTH);
-    printOpenBox("[6] Log Out", BOX_WIDTH);
+    printOpenBox("[1] My Properties", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Applications Inbox", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] View Contracts", BOX_WIDTH, CONTENT);
+    printOpenBox("[4] Update Profile", BOX_WIDTH, CONTENT);
+    printOpenBox("[5] Log Out", BOX_WIDTH, CONTENT);
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     getline(cin, choice);
@@ -283,12 +207,11 @@ int getTenantSessionMenu(Tenant &tenant)
     string choice;
     clearScreen();
     printBox("WELCOME, " + tenant.getName(), BOX_WIDTH);
-    printOpenBox("[1] My Lease & Pay Rent", BOX_WIDTH);
-    printOpenBox("[2] Browse New Properties", BOX_WIDTH);
-    printOpenBox("[3] My Applications", BOX_WIDTH);
-    printOpenBox("[4] Payment History", BOX_WIDTH);
-    printOpenBox("[5] Update Profile", BOX_WIDTH);
-    printOpenBox("[6] Log Out", BOX_WIDTH);
+    printOpenBox("[1] My Lease & Pay Rent", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Browse New Properties", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] My Applications", BOX_WIDTH, CONTENT);
+    printOpenBox("[4] Update Profile", BOX_WIDTH, CONTENT);
+    printOpenBox("[5] Log Out", BOX_WIDTH, CONTENT);
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     getline(cin, choice);
@@ -301,13 +224,13 @@ int getMyPropertiesSession()
     string choice;
     clearScreen();
     printBox("MY PROPERTIES", BOX_WIDTH);
-    printOpenBox("[1] View Properties", BOX_WIDTH);
-    printOpenBox("[2] Add New Property", BOX_WIDTH);
-    printOpenBox("[3] Remove Properties", BOX_WIDTH);
-    printOpenBox("[4] Edit Property", BOX_WIDTH);
-    printOpenBox("[5] List Properties", BOX_WIDTH);
-    printOpenBox("[6] UnList Properties", BOX_WIDTH);
-    printOpenBox("[7] Back", BOX_WIDTH);
+    printOpenBox("[1] View Properties", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Add New Property", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] Remove Properties", BOX_WIDTH, CONTENT);
+    printOpenBox("[4] Edit Property", BOX_WIDTH, CONTENT);
+    printOpenBox("[5] List Properties", BOX_WIDTH, CONTENT);
+    printOpenBox("[6] Delist Properties", BOX_WIDTH, CONTENT);
+    printOpenBox("[7] Back", BOX_WIDTH, CONTENT);
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     getline(cin, choice);
@@ -322,35 +245,42 @@ vector<string> newPropertyForm()
     string type = enterMessageBoxModified("Enter property type", " (e.g., Villa, Townhouse): ", BOX_WIDTH);
     string location = enterMessageBox("Enter property location: ", BOX_WIDTH);
     string description = enterMessageBox("Enter property description: ", BOX_WIDTH);
-    string dimensions = enterMessageBoxModified("Enter property dimensions", " (length & width, ex: 10 20): ", BOX_WIDTH);
+    string area = enterMessageBoxModified("Enter property area", " (NUMBER ONLY, ex: 10): ", BOX_WIDTH);
     string rentalValueStr = enterMessageBoxModified("Enter rental value", " (per month value): ", BOX_WIDTH);
-    return {type, location, description, dimensions, rentalValueStr};
+    return {type, location, description, area, rentalValueStr};
 }
 
-void displayPropertyHeader(vector<string> propertyHeader)
+void displayPropertyHeader()
 {
-    printSeveralInBox(propertyHeader, BOX_WIDTH);
+    printBox("PROPERTIES LIST", BOX_WIDTH);
 }
 
-void displayProperty(vector<string> propertyInfo)
+void displayEditPropertyHeader()
 {
-    printSeveralInOpenBox(propertyInfo, BOX_WIDTH);
+    printBox("PROPERTIES LIST", BOX_WIDTH);
+    printOpenBox("Choose the property you want to edit: ", BOX_WIDTH, INFO);
 }
 
-int displayPropertiesToBeRemoved(vector<vector<string>> propertiesInfo)
+
+void displayProperty(int num, vector<string> propertyInfo)
 {
-    clearScreen();
+    cout << CONTENT << "[" << num << "] ";
+    string str = "A " + propertyInfo[1] + " Located At " + propertyInfo[0] + " with an area of " + propertyInfo[4] + " valued at " + propertyInfo[3];
+    cout << str << RESET << endl;
+}
+
+void removePropertyHeader()
+{
     printBox("REMOVE PROPERTY", BOX_WIDTH);
-    printSubBox("Choose the one you want to remove:", BOX_WIDTH);
-    for(int i = 0; i < propertiesInfo.size(); i++)
-    {
-       string p = "[" + to_string(i) + "] " + "A " + propertiesInfo[i][1] + " Located at " + propertiesInfo[i][0];
-       printOpenBox(p, BOX_WIDTH);
-    }
+    printOpenBox("Choose the one you want to remove:", BOX_WIDTH, INFO);
+}
+
+int receiveData()
+{
     printLine(BOX_WIDTH);
     cout << BORDER << "  [>] " << INPUT;
     string choice = "";
     getline(cin, choice);
     int res = stoi(choice);
-    return stoi(propertiesInfo[res][5]);
+    return stoi(choice);
 }

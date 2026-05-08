@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>
 #include <iomanip>
 
 #include "../include/display.h"
@@ -15,7 +14,7 @@ int main()
 {
     AppRegistry registry;
     int choice = 0;
-    while (choice != 5)
+    while (choice != 4)
     {
         choice = initialPage();
         routeMainMenuChoice(choice, registry);

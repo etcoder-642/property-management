@@ -32,6 +32,16 @@ vector<string> splitString(string input, char identifier)
     return res;
 }
 
+void listOwnerProperties(Owner &owner, AppRegistry &registry)
+{
+    vector<int> properties = owner.getPropertyIDs();
+    for (int i = 0; i < properties.size(); i++)
+    {
+        vector<string> propertiesInfo = registry.propertyRegistry.getFormattedPropertyData(properties[i]);
+        displayProperty(properties[i], propertiesInfo);
+    }
+}
+
 void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
 {
     int myPropertiesChoice = 0;
@@ -42,22 +52,17 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         {
         case 1: // View Properties
         {
-            // build a function to make this modular and enable usage several times
-            vector<vector<string>> propertiesInfo = registry.propertyRegistry.getPropertyFromOwner(owner);
-            displayPropertyHeader({"LOCATION", "TYPE", "DESCRIPTION", "RENTAL VALUE", "DIMENSIONS"});
-            for (vector<string> p : propertiesInfo)
-            {
-                displayProperty(p);
-            }
+            // show the header "PROPERTY LIST" before listing the properties
+            displayPropertyHeader();
+            listOwnerProperties(owner, registry);
             pause();
         }
         break;
         case 2: // Add New Properties
         {
             vector<string> newPropertyInfo = newPropertyForm();
-            vector<string> dimensionsStr = splitString(newPropertyInfo[3], ' ');
-            vector<double> dimensions = {stod(dimensionsStr[0]), stod(dimensionsStr[1])};
-            Property newProperty(-1, -1, false, false, newPropertyInfo[0], newPropertyInfo[1], newPropertyInfo[2], dimensions, stod(newPropertyInfo[4]));
+            int ownerID = owner.getOwnerID();
+            Property newProperty(ownerID, -1, false, false, newPropertyInfo[0], newPropertyInfo[1], newPropertyInfo[2], stod(newPropertyInfo[3]), stod(newPropertyInfo[4]), "Good");
             int id = registry.propertyRegistry.addProperty(newProperty);
             owner.addProperty(id);
             displaySuccessMessage("Property added successfully!");
@@ -66,24 +71,73 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         break;
         case 3: // Remove Properties
         {
-            vector<vector<string>> propertiesInfo = registry.propertyRegistry.getPropertyFromOwner(owner);
-            int propertyToRemove = displayPropertiesToBeRemoved(propertiesInfo);
-            if(registry.propertyRegistry.removePropertyByID(propertyToRemove)){
-                displaySuccessMessage("Successfully Removed!");
-            }else{
-                displayErrorMessage("Failed To Remove!");
+            removePropertyHeader();
+            // list properties for the user to chose which to remove
+            listOwnerProperties(owner, registry);
+            int propertyToBeRemoved = receiveData();
+            if (registry.propertyRegistry.removePropertyByID(propertyToBeRemoved))
+            {
+                owner.removeProperty(propertyToBeRemoved);
+                displaySuccessMessage("Property removed successfully");
             }
+            else
+                displayErrorMessage("Property removal failed!");
             pause();
         }
         break;
-        case 4:
-            // Edit Property
+        case 4: // Edit Property
+            {
+                // Display properties to choose from
+                displayEditPropertyHeader();
+                listOwnerProperties(owner, registry);
+
+                // Get which property to edit
+                int propertyToEdit = receiveData(); // reuse same input function
+                Property *prop = registry.propertyRegistry.getPropertyByID(propertyToEdit);
+                if (prop == nullptr)
+                {
+                    displayErrorMessage("Property not found!");
+                    pause();
+                    break;
+                }
+
+                // Get new values
+                vector<string> newPropertyInfo = newPropertyForm();
+                prop->setType(newPropertyInfo[0]);
+                prop->setLocation(newPropertyInfo[1]);
+                prop->setDescription(newPropertyInfo[2]);
+                prop->setRentalValue(stod(newPropertyInfo[4]));
+
+                displaySuccessMessage("Property updated successfully!");
+                pause();
+            }
             break;
-        case 5:
-            // List Properties
+        case 5: // List Properties
+        {
+            // list properties for the user to chose which to remove
+            listOwnerProperties(owner, registry);
+            // take the value the user wants to list
+            int propertyToBeListed = receiveData();
+            // if listing successful show a successMessage if it failed show an Error message
+            if(registry.propertyRegistry.listProperty(propertyToBeListed)){
+                displaySuccessMessage("Property successfully listed!");
+            }else displayErrorMessage("Property listing failed!");
+            pause();
+        }
             break;
         case 6:
             // UnList Properties
+        {
+            // list properties for the user to chose which to remove
+            listOwnerProperties(owner, registry);
+            // take the value the user wants to list
+            int propertyToBeDelisted = receiveData();
+            // if delisting successful show a successMessage if it failed show an Error message
+            if(registry.propertyRegistry.delistProperty(propertyToBeDelisted)){
+                displaySuccessMessage("Property successfully delisted!");
+            }else displayErrorMessage("Property delisting failed!");
+            pause();
+        }
             break;
         default:
             break;
@@ -94,7 +148,7 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
 void handleOwnerSession(Owner &owner, AppRegistry &registry)
 {
     int ownerChoice = 0;
-    while (ownerChoice != 6)
+    while (ownerChoice != 5)
     {
         ownerChoice = getOwnerSessionMenu(owner);
         switch (ownerChoice)
@@ -122,7 +176,7 @@ void handleOwnerSession(Owner &owner, AppRegistry &registry)
 void handleTenantSession(Tenant &tenant, AppRegistry &registry)
 {
     int tenantChoice = 0;
-    while (tenantChoice != 6)
+    while (tenantChoice != 5)
     {
         tenantChoice = getTenantSessionMenu(tenant);
         switch (tenantChoice)
@@ -160,7 +214,7 @@ void handleRegister(int registerChoice, AppRegistry &registry)
     if (registerChoice == 1)
     {
         vector<string> ownerInfo = displayRegistry(1);
-        Owner tempOwner(ownerInfo[0], ownerInfo[1], ownerInfo[2]);
+        Owner tempOwner(ownerInfo[0], ownerInfo[1]);
         registry.ownerRegistry.addOwner(tempOwner);
         int index = registry.ownerRegistry.getOwners().size() - 1;
         displaySuccessMessage("Owner registered successfully!");
@@ -170,7 +224,7 @@ void handleRegister(int registerChoice, AppRegistry &registry)
     else if (registerChoice == 2)
     {
         vector<string> tenantInfo = displayRegistry(2);
-        Tenant tempTenant(tenantInfo[0], tenantInfo[1], tenantInfo[2]);
+        Tenant tempTenant(tenantInfo[0], tenantInfo[1]);
         registry.tenantRegistry.addTenant(tempTenant);
         int index = registry.tenantRegistry.getTenants().size() - 1;
         displaySuccessMessage("Tenant registered successfully!");

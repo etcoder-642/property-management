@@ -40,7 +40,8 @@ public:
 
     bool removePropertyByID(int id);
     vector<string> getFormattedPropertyData(int id);
-    vector<vector<string>> getPropertyFromOwner(Owner &owner);
+    bool listProperty(int id);
+    bool delistProperty(int id);
 };
 
 class ContractRegistry {

@@ -19,11 +19,12 @@ private:
     string type; // villa, town house etc.
     string location; // city name, neighbourhood Example: Addis Ababa, Bole
     string description; // additional info
-    vector<double> dimensions; // length and width for simplicity
+    double area; // length and width for simplicity
     double rentalValue;
+    string maintenanceStatus;
 public:
-    Property(int ownerID, int tenantID, bool isListed, bool isRented, string type, string location, string description, vector<double> dimensions, double rentalValue)
-     : ownerID(ownerID), tenantID(tenantID), isListed(isListed), isRented(isRented), type(type), location(location), description(description), dimensions(dimensions), rentalValue(rentalValue), propertyID(-1) {}
+    Property(int ownerID, int tenantID, bool isListed, bool isRented, string type, string location, string description, double area, double rentalValue, string maintenanceStatus)
+     : ownerID(ownerID), tenantID(tenantID), isListed(isListed), isRented(isRented), type(type), location(location), description(description), area(area), rentalValue(rentalValue), maintenanceStatus(maintenanceStatus), propertyID(-1) {}
 
     int getPropertyID() const { return propertyID; }
     int getOwnerID() const { return ownerID; }
@@ -31,8 +32,11 @@ public:
     string getType() const { return type; }
     string getLocation() const { return location; }
     string getDescription() const { return description; }
-    vector<double> getDimensions() const { return dimensions; }
+    double getArea() const { return area; }
     double getRentalValue() const { return rentalValue; }
+    string getMaintenanceStatus() const { return maintenanceStatus; }
+    bool getIsListed() const {return isListed; }
+    bool getIsRented() const {return isRented; }
 
     void setPropertyID(int newPropertyID) { propertyID = newPropertyID; }
     void setOwnerID(int newOwnerID) { ownerID = newOwnerID; }
@@ -41,6 +45,10 @@ public:
     void setLocation(string newLocation) { location = newLocation; }
     void setDescription(string newDescription) { description = newDescription; }
     void setRentalValue(double newRentalValue) { rentalValue = newRentalValue; }
+    void setArea(double newArea) {area = newArea; }
+    void setMaintenanceStatus(string newMS) { maintenanceStatus = newMS;}
+    void setIsListed(bool value) { isListed = value; }
+    void setIsRented(bool value) { isRented = value; }
 };
 
 
@@ -48,43 +56,37 @@ class Owner {
 private:
     int ownerID;
     string name;
-    string phoneNumber;
     string password;
     vector<int> propertyIDs;
 public:
-    Owner(string name, string phoneNumber, string password)
-     : name(name), phoneNumber(phoneNumber), password(password), ownerID(-1) {}
+    Owner(string name, string password)
+     : name(name), password(password), ownerID(-1) {}
     
     int getOwnerID() const { return ownerID; }
     string getName() const { return name; }
-    string getPhoneNumber() const { return phoneNumber; }
     vector<int> getPropertyIDs() const { return propertyIDs; }
 
     void setName(string newName) { name = newName; }
-    void setPhoneNumber(string newPhoneNumber) { phoneNumber = newPhoneNumber; }
     void setOwnerID(int newOwnerID) { ownerID = newOwnerID; }
 
     void addProperty(const int& propertyID);
+    void removeProperty(const int& propertyID);
 };
 
 class Tenant {
 private:
     int tenantID;
     string name;
-    string phoneNumber;
     string password;
 public:
-    Tenant(string name, string phoneNumber, string password)
-     : name(name), phoneNumber(phoneNumber), password(password), tenantID(-1) {}
+    Tenant(string name, string password)
+     : name(name), password(password), tenantID(-1) {}
     
     int getTenantID() const { return tenantID; }
     string getName() const { return name; }
-    string getPhoneNumber() const { return phoneNumber; }
 
     void setName(string newName) { name = newName; }
-    void setPhoneNumber(string newPhoneNumber) { phoneNumber = newPhoneNumber; }
     void setTenantID(int newTenantID) { tenantID = newTenantID; }
-
 };
 
 struct Date {
