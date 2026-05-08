@@ -52,8 +52,8 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         {
         case 1: // View Properties
         {
-            // show the header "PROPERTY LIST" before listing the properties
-            displayPropertyHeader();
+            displayHeader("PROPERTY LIST");
+            // list all Properties
             listOwnerProperties(owner, registry);
             pause();
         }
@@ -62,7 +62,7 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         {
             vector<string> newPropertyInfo = newPropertyForm();
             int ownerID = owner.getOwnerID();
-            Property newProperty(ownerID, -1, false, false, newPropertyInfo[0], newPropertyInfo[1], newPropertyInfo[2], stod(newPropertyInfo[3]), stod(newPropertyInfo[4]), "Good");
+            Property newProperty(ownerID, -1, false, false, newPropertyInfo[0], newPropertyInfo[1], newPropertyInfo[2], stoi(newPropertyInfo[3]), stoi(newPropertyInfo[4]), "Good");
             int id = registry.propertyRegistry.addProperty(newProperty);
             owner.addProperty(id);
             displaySuccessMessage("Property added successfully!");
@@ -71,9 +71,11 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         break;
         case 3: // Remove Properties
         {
-            removePropertyHeader();
+            displayHeader("REMOVE PROPERTY");
+            displaySubHeader("Choose the property you want to remove by entering the number: ");
             // list properties for the user to chose which to remove
             listOwnerProperties(owner, registry);
+            // get which property to remove
             int propertyToBeRemoved = receiveData();
             if (registry.propertyRegistry.removePropertyByID(propertyToBeRemoved))
             {
@@ -86,58 +88,86 @@ void handleMyPropertiesSession(Owner &owner, AppRegistry &registry)
         }
         break;
         case 4: // Edit Property
+        {
+            // Display properties to choose from
+            displayHeader("EDIT PROPERTY");
+            displaySubHeader("Choose the property you want to edit: ");
+            listOwnerProperties(owner, registry);
+
+            // Get which property to edit
+            int propertyToEdit = receiveData(); // reuse same input function
+            Property *prop = registry.propertyRegistry.getPropertyByID(propertyToEdit);
+            if (prop == nullptr)
             {
-                // Display properties to choose from
-                displayEditPropertyHeader();
-                listOwnerProperties(owner, registry);
-
-                // Get which property to edit
-                int propertyToEdit = receiveData(); // reuse same input function
-                Property *prop = registry.propertyRegistry.getPropertyByID(propertyToEdit);
-                if (prop == nullptr)
-                {
-                    displayErrorMessage("Property not found!");
-                    pause();
-                    break;
-                }
-
-                // Get new values
-                vector<string> newPropertyInfo = newPropertyForm();
-                prop->setType(newPropertyInfo[0]);
-                prop->setLocation(newPropertyInfo[1]);
-                prop->setDescription(newPropertyInfo[2]);
-                prop->setRentalValue(stod(newPropertyInfo[4]));
-
-                displaySuccessMessage("Property updated successfully!");
+                displayErrorMessage("Property not found!");
                 pause();
+                break;
             }
-            break;
+
+            // Get new values
+            vector<string> newPropertyInfo = newPropertyForm();
+            prop->setType(newPropertyInfo[0]);
+            prop->setLocation(newPropertyInfo[1]);
+            prop->setDescription(newPropertyInfo[2]);
+            prop->setRentalValue(stoi(newPropertyInfo[4]));
+
+            displaySuccessMessage("Property updated successfully!");
+            pause();
+        }
+        break;
         case 5: // List Properties
         {
+            displayHeader("LIST A PROPERTY");
+            displaySubHeader("Choose a property you want to list: ");
             // list properties for the user to chose which to remove
             listOwnerProperties(owner, registry);
             // take the value the user wants to list
             int propertyToBeListed = receiveData();
             // if listing successful show a successMessage if it failed show an Error message
-            if(registry.propertyRegistry.listProperty(propertyToBeListed)){
+            if (registry.propertyRegistry.listProperty(propertyToBeListed))
+            {
                 displaySuccessMessage("Property successfully listed!");
-            }else displayErrorMessage("Property listing failed!");
+            }
+            else
+                displayErrorMessage("Property listing failed!");
             pause();
         }
+        break;
+        case 6: // Delist Properties
+            {
+                displayHeader("DELIST A PROPERTY");
+                displaySubHeader("Choose a property you want to delist");
+                // list properties for the user to chose which to remove
+                listOwnerProperties(owner, registry);
+                // take the value the user wants to list
+                int propertyToBeDelisted = receiveData();
+                // if delisting successful show a successMessage if it failed show an Error message
+                if (registry.propertyRegistry.delistProperty(propertyToBeDelisted))
+                {
+                    displaySuccessMessage("Property successfully delisted!");
+                }
+                else
+                    displayErrorMessage("Property delisting failed!");
+                pause();
+            }
             break;
-        case 6:
-            // UnList Properties
-        {
-            // list properties for the user to chose which to remove
-            listOwnerProperties(owner, registry);
-            // take the value the user wants to list
-            int propertyToBeDelisted = receiveData();
-            // if delisting successful show a successMessage if it failed show an Error message
-            if(registry.propertyRegistry.delistProperty(propertyToBeDelisted)){
-                displaySuccessMessage("Property successfully delisted!");
-            }else displayErrorMessage("Property delisting failed!");
-            pause();
+        default:
+            break;
         }
+    }
+}
+
+void handleTenantLeaseSession(Tenant &tenant, AppRegistry &registry)
+{
+    int tenantChoice = 0;
+    while (tenantChoice != 3)
+    {
+        tenantChoice = getMyPropertiesSession();
+        switch (tenantChoice)
+        {
+        case 1: // View Current Lease
+            break;
+        case 2: // Pay Rent
             break;
         default:
             break;
@@ -153,19 +183,16 @@ void handleOwnerSession(Owner &owner, AppRegistry &registry)
         ownerChoice = getOwnerSessionMenu(owner);
         switch (ownerChoice)
         {
-        case 1:
+        case 1: // My Properties
         {
             handleMyPropertiesSession(owner, registry);
         }
         break;
-        case 2:
-            // Add Property
+        case 2: // Applications Inbox
             break;
-        case 3:
-            // Edit Property
+        case 3: // View Contracts
             break;
-        case 4:
-            // View Tenants
+        case 4: // Update Profile
             break;
         default:
             break;
@@ -181,12 +208,46 @@ void handleTenantSession(Tenant &tenant, AppRegistry &registry)
         tenantChoice = getTenantSessionMenu(tenant);
         switch (tenantChoice)
         {
-        case 1:
-            // View Properties
-            break;
-        case 2:
-            // Add Property
-            break;
+        case 1: // My Lease & Pay Rent
+        {
+            handleTenantLeaseSession(tenant, registry);
+        }
+        break;
+        case 2: // Browse New Properties
+        {
+            displayHeader("LISTED PROPERTIES");
+            displaySubHeader("Choose a property you want to apply to: ");
+            vector<Property> allProperties = registry.propertyRegistry.getProperties();
+            vector<int> listedProperties;
+            for (int i = 0; i < allProperties.size(); i++)
+            {
+                if (allProperties[i].getIsListed())
+                {
+                    listedProperties.push_back(allProperties[i].getPropertyID());
+                }
+            }
+            for (int i = 0; i < listedProperties.size(); i++)
+            {
+                vector<string> propertiesInfo = registry.propertyRegistry.getFormattedPropertyData(listedProperties[i]);
+                displayProperty(stoi(propertiesInfo[4]), propertiesInfo);
+            }
+            // take a user input of where the property the tenant is applying to rent
+            int propertyApplied = receiveData();
+            displayHeader("PROPERTY APPLICATION");
+            displaySubHeader("Enter necessary information to the property you are applying to: ");
+            vector<string> applicationInfo = propertyApplicationForm();
+            vector<string> dateInString = splitString(applicationInfo[0], '/');
+            Date moveInDate = {stoi(dateInString[0]), stoi(dateInString[1]), stoi(dateInString[2])};
+            Property* prop = registry.propertyRegistry.getPropertyByID(propertyApplied);
+            Contract newContract(prop->getOwnerID(), tenant.getTenantID(), propertyApplied, moveInDate, prop->getRentalValue(), stoi(applicationInfo[1]));
+            newContract.setIsActive(false);
+            registry.contractRegistry.addContract(newContract);
+
+            displaySuccessMessage("Your Application have been successfully submitted.");
+            displaySuccessMessage("You will be notified once the owner reviews it.");
+            pause();
+        }
+        break;
         case 3:
             // Edit Property
             break;

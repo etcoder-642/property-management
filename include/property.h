@@ -19,11 +19,11 @@ private:
     string type; // villa, town house etc.
     string location; // city name, neighbourhood Example: Addis Ababa, Bole
     string description; // additional info
-    double area; // length and width for simplicity
-    double rentalValue;
+    int area; // length and width for simplicity
+    int rentalValue;
     string maintenanceStatus;
 public:
-    Property(int ownerID, int tenantID, bool isListed, bool isRented, string type, string location, string description, double area, double rentalValue, string maintenanceStatus)
+    Property(int ownerID, int tenantID, bool isListed, bool isRented, string type, string location, string description, int area, int rentalValue, string maintenanceStatus)
      : ownerID(ownerID), tenantID(tenantID), isListed(isListed), isRented(isRented), type(type), location(location), description(description), area(area), rentalValue(rentalValue), maintenanceStatus(maintenanceStatus), propertyID(-1) {}
 
     int getPropertyID() const { return propertyID; }
@@ -32,8 +32,8 @@ public:
     string getType() const { return type; }
     string getLocation() const { return location; }
     string getDescription() const { return description; }
-    double getArea() const { return area; }
-    double getRentalValue() const { return rentalValue; }
+    int getArea() const { return area; }
+    int getRentalValue() const { return rentalValue; }
     string getMaintenanceStatus() const { return maintenanceStatus; }
     bool getIsListed() const {return isListed; }
     bool getIsRented() const {return isRented; }
@@ -44,8 +44,8 @@ public:
     void setType(string newType) { type = newType; }
     void setLocation(string newLocation) { location = newLocation; }
     void setDescription(string newDescription) { description = newDescription; }
-    void setRentalValue(double newRentalValue) { rentalValue = newRentalValue; }
-    void setArea(double newArea) {area = newArea; }
+    void setRentalValue(int newRentalValue) { rentalValue = newRentalValue; }
+    void setArea(int newArea) {area = newArea; }
     void setMaintenanceStatus(string newMS) { maintenanceStatus = newMS;}
     void setIsListed(bool value) { isListed = value; }
     void setIsRented(bool value) { isRented = value; }
@@ -97,9 +97,6 @@ struct Date {
 
 class Contract {
 private:
-    string contractTitle;
-    string contractDescription;
-
     int contractID;
     int ownerID;
     int tenantID;
@@ -111,14 +108,10 @@ private:
     double rentalAmount;
     int contractDuration; // in months
 public:
-    Contract(string contractTitle, string contractDescription, int ownerID, 
-             int tenantID, int propertyID, Date date, double rentalAmount, int contractDuration)
-     : contractTitle(contractTitle), contractDescription(contractDescription), 
-       ownerID(ownerID), tenantID(tenantID), propertyID(propertyID), date(date), 
+    Contract(int ownerID, int tenantID, int propertyID, Date date, double rentalAmount, int contractDuration)
+     : ownerID(ownerID), tenantID(tenantID), propertyID(propertyID), date(date), 
        rentalAmount(rentalAmount), contractDuration(contractDuration), contractID(-1) {}
 
-    string getContractTitle() const { return contractTitle; }
-    string getContractDescription() const { return contractDescription; }
     int getContractID() const { return contractID; }
     int getOwnerID() const { return ownerID; }
     int getTenantID() const { return tenantID; }
@@ -126,13 +119,13 @@ public:
     Date getDate() const { return date; }
     double getRentalAmount() const { return rentalAmount; }
     int getContractDuration() const { return contractDuration; }
+    bool getIsActive() const { return isActive; }
 
     void setContractID(int newContractID) { contractID = newContractID; }
-    void setContractTitle(string newContractTitle) { contractTitle = newContractTitle; }
-    void setContractDescription(string newContractDescription) { contractDescription = newContractDescription; }
     void setDate(Date newDate) { date = newDate; }
     void setRentalAmount(double newRentalAmount) { rentalAmount = newRentalAmount; }
     void setContractDuration(int newContractDuration) { contractDuration = newContractDuration; }
+    void setIsActive(bool value) {isActive = value; }
 };
 
 

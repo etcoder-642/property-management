@@ -29,6 +29,14 @@ int PropertyRegistry::addProperty(Property &property)
     return property.getPropertyID();
 }
 
+int ContractRegistry::addContract(Contract &contract)
+{
+    contract.setContractID(++nextID);
+    contracts.push_back(contract);
+    return contract.getContractID();
+}
+
+
 Property *PropertyRegistry::getPropertyByID(int propertyID)
 {
     for (Property &p : properties)
@@ -40,6 +48,17 @@ Property *PropertyRegistry::getPropertyByID(int propertyID)
     }
     return nullptr;
 }
+
+vector<int> PropertyRegistry::getAllPropertiesID()
+{
+    vector<int> res;
+    for (Property &p : properties)
+    {
+        res.push_back(p.getPropertyID());
+    }
+    return res;
+}
+
 
 bool PropertyRegistry::removePropertyByID(int id)
 {
@@ -92,7 +111,7 @@ vector<string> PropertyRegistry::getFormattedPropertyData(int id)
     string tempLocation = prop->getLocation();
     string tempType = prop->getType();
     string tempDesc = prop->getDescription();
-    double tempArea = prop->getArea();
-    double tempRentalValue = prop->getRentalValue();
+    int tempArea = prop->getArea();
+    int tempRentalValue = prop->getRentalValue();
     return {tempLocation, tempType, tempDesc, to_string(tempRentalValue), to_string(tempArea), to_string(id)};
 }

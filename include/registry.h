@@ -36,7 +36,9 @@ public:
     PropertyRegistry() {}
 
     int addProperty(Property& property);
+    vector<Property> getProperties() const { return properties; };
     Property* getPropertyByID(int propertyID);
+    vector<int> getAllPropertiesID();
 
     bool removePropertyByID(int id);
     vector<string> getFormattedPropertyData(int id);

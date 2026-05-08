@@ -238,6 +238,21 @@ int getMyPropertiesSession()
     return res;
 }
 
+int getTenantLeaseSession()
+{
+    string choice;
+    clearScreen();
+    printBox("MY PROPERTIES", BOX_WIDTH);
+    printOpenBox("[1] View Current Lease", BOX_WIDTH, CONTENT);
+    printOpenBox("[2] Pay Rent", BOX_WIDTH, CONTENT);
+    printOpenBox("[3] Back", BOX_WIDTH, CONTENT);
+    printLine(BOX_WIDTH);
+    cout << BORDER << "  [>] " << INPUT;
+    getline(cin, choice);
+    int res = stoi(choice);
+    return res;
+}
+
 vector<string> newPropertyForm()
 {
     clearScreen();
@@ -250,29 +265,30 @@ vector<string> newPropertyForm()
     return {type, location, description, area, rentalValueStr};
 }
 
-void displayPropertyHeader()
+vector<string> propertyApplicationForm()
 {
-    printBox("PROPERTIES LIST", BOX_WIDTH);
+    clearScreen();
+    printBox("ADD NEW PROPERTY", BOX_WIDTH);
+    string moveInDate = enterMessageBoxModified("Enter move-in date", " (NUMBER ONLY(D/M/Y)e.g. 12/3/4): ", BOX_WIDTH);
+    string duration = enterMessageBox("Enter contract duration: ", BOX_WIDTH);
+    return {moveInDate, duration};
 }
 
-void displayEditPropertyHeader()
+void displayHeader(string str)
 {
-    printBox("PROPERTIES LIST", BOX_WIDTH);
-    printOpenBox("Choose the property you want to edit: ", BOX_WIDTH, INFO);
+    printBox(str, BOX_WIDTH);
 }
 
+void displaySubHeader(string str)
+{
+    printOpenBox(str, BOX_WIDTH, INFO);
+}
 
 void displayProperty(int num, vector<string> propertyInfo)
 {
     cout << CONTENT << "[" << num << "] ";
     string str = "A " + propertyInfo[1] + " Located At " + propertyInfo[0] + " with an area of " + propertyInfo[4] + " valued at " + propertyInfo[3];
     cout << str << RESET << endl;
-}
-
-void removePropertyHeader()
-{
-    printBox("REMOVE PROPERTY", BOX_WIDTH);
-    printOpenBox("Choose the one you want to remove:", BOX_WIDTH, INFO);
 }
 
 int receiveData()
