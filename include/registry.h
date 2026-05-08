@@ -9,29 +9,33 @@ using namespace std;
 class OwnerRegistry {
 private:
     vector<Owner> owners;
-    int nextID = -1;
+    int nextID = 0;
 public:
     OwnerRegistry() {}
 
     vector<Owner>& getOwners() { return owners; }
     int addOwner(Owner& owner);
+    Owner* verifyData(vector<string> input);
 };
 
 class TenantRegistry {
 private:
    vector<Tenant> tenants;
-   int nextID = -1;
+   int nextID = 0;
 public:
    TenantRegistry() {}
 
    vector<Tenant>& getTenants() { return tenants; }
+
+   Tenant* getTenantByID(int tenantID);
    int addTenant(Tenant& tenant);
+   Tenant* verifyData(vector<string> input);
 };
 
 class PropertyRegistry {
 private:
     vector<Property> properties;
-    int nextID = -1;
+    int nextID = 0;
 public:
     PropertyRegistry() {}
 
@@ -52,6 +56,9 @@ private:
     int nextID = -1;
 public:
     ContractRegistry() {}
+    vector<Contract> getContracts() const {return contracts; }
+    Contract* getContractByID(int contractID);
+    bool activateContractByID(int contractID);
 
     int addContract(Contract& contract);
 };

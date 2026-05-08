@@ -64,9 +64,11 @@ public:
     
     int getOwnerID() const { return ownerID; }
     string getName() const { return name; }
+    string getPassword() const { return password; }
     vector<int> getPropertyIDs() const { return propertyIDs; }
 
     void setName(string newName) { name = newName; }
+    void setPassword(string newPassword) { password = newPassword; }
     void setOwnerID(int newOwnerID) { ownerID = newOwnerID; }
 
     void addProperty(const int& propertyID);
@@ -84,8 +86,10 @@ public:
     
     int getTenantID() const { return tenantID; }
     string getName() const { return name; }
+    string getPassword() const { return password; }
 
     void setName(string newName) { name = newName; }
+    void setPassword(string nP) { password = nP; }
     void setTenantID(int newTenantID) { tenantID = newTenantID; }
 };
 
@@ -102,7 +106,7 @@ private:
     int tenantID;
     int propertyID;
 
-    bool isActive; // is the contract currently active or has it expired/been terminated?
+    bool isActive; // to check if the contract have been approved by the owner or not.
 
     Date date;
     double rentalAmount;

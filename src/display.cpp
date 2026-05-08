@@ -14,7 +14,7 @@
 // Semantic
 #define SUCCESS "\033[1;32m" // bold green
 #define ERROR "\033[1;31m"   // bold red
-#define WARNING "\033[1;33m" // bold yellow — use sparingly, close to BORDER
+#define WARNING "\033[1;35m" // bold magenta
 #define INFO "\033[1;36m"    // bold cyan — for status labels, hints
 #define DIM "\033[2;37m"     // dimmed white — for secondary text, timestamps
 #define INPUT "\033[1;37m"   // bold white — what the user types
@@ -49,6 +49,16 @@ void printBox(string title, int width)
     for (int i = 0; i < width - 2; i++)
         cout << "─";
     cout << BORDER << "┤\n";
+}
+
+void printKeyValue(string key, string value, int width, string color)
+{
+    int keyColWidth = 30;
+    int valueColWidth = width - keyColWidth - 5; // 4 for "│ ", " │"
+
+    cout << BORDER << "│ " << color << left << setw(keyColWidth) << key
+         << "| " << CONTENT << setw(valueColWidth) << value
+         << BORDER << "│\n" << RESET << endl;
 }
 
 // prints a straight line with given width
@@ -175,11 +185,8 @@ int handleRegisterUI()
     return res;
 }
 
-vector<string> displayRegistry(int registerChoice)
+vector<string> displayRegistry()
 {
-    string role = (registerChoice == 1) ? "OWNER" : "TENANT";
-    clearScreen();
-    printBox(role + " REGISTRATION", BOX_WIDTH);
     string name = enterMessageBox("Enter your name: ", BOX_WIDTH);
     string password = enterMessageBox("Enter your password: ", BOX_WIDTH);
     return {name, password};
@@ -255,7 +262,6 @@ int getTenantLeaseSession()
 
 vector<string> newPropertyForm()
 {
-    clearScreen();
     printBox("ADD NEW PROPERTY", BOX_WIDTH);
     string type = enterMessageBoxModified("Enter property type", " (e.g., Villa, Townhouse): ", BOX_WIDTH);
     string location = enterMessageBox("Enter property location: ", BOX_WIDTH);
@@ -284,11 +290,31 @@ void displaySubHeader(string str)
     printOpenBox(str, BOX_WIDTH, INFO);
 }
 
+void displayValue(string str)
+{
+    printOpenBox(str, BOX_WIDTH, CONTENT);
+}
+
+void displayInfo(string str)
+{
+    printOpenBox(str, BOX_WIDTH, DIM);
+}
+
+void displayEndLine()
+{
+    printLine(BOX_WIDTH);
+}
+
+
+void displayKeyValue(string str, string subStr)
+{
+    printKeyValue(str, subStr, BOX_WIDTH, WARNING);
+}
+
 void displayProperty(int num, vector<string> propertyInfo)
 {
-    cout << CONTENT << "[" << num << "] ";
-    string str = "A " + propertyInfo[1] + " Located At " + propertyInfo[0] + " with an area of " + propertyInfo[4] + " valued at " + propertyInfo[3];
-    cout << str << RESET << endl;
+    string str =  "[" + to_string(num) + "] " + propertyInfo[1] + " located at " + propertyInfo[0] + " with an area of " + propertyInfo[4] + " valued at " + propertyInfo[3] + ".";
+    printOpenBox(str, BOX_WIDTH, CONTENT);
 }
 
 int receiveData()
