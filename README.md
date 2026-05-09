@@ -1,26 +1,9 @@
 #  PROPERTY MANAGEMENT SYSTEM
 
-File Structure
 
-property-management
-|- bin
-|- include
-  |- display.h
-  |- property.h
-  |- registry.h
-  |- session.h
-|- src
-  |- display.cpp
-  |- main.cpp
-  |- property.cpp
-  |- registry.cpp
-  |- session.cpp
-|- .gitignore
+# A Console-Based Property Management System
 
-
-# 🏠 RentEase — A Console-Based Property Management System
-
-A terminal application built in C++ that connects **property owners** and **tenants** through a clean, menu-driven interface. Owners can post properties for rent, tenants can browse and apply, and the whole process — from application to contract approval — is handled inside the program.
+A terminal application built in C++ that connects **property owners** and **tenants** through a clean, menu-driven interface. Owners can post(list) properties for rent, tenants can browse and apply, and the whole process — from application to contract approval — is handled inside the program.
 
 ---
 
@@ -29,7 +12,7 @@ A terminal application built in C++ that connects **property owners** and **tena
 ### For Property Owners
 - Register an account and log back in anytime
 - Add properties with details like type, location, area, and monthly rent
-- **List** properties to make them visible to tenants, or **delist** them to hide them
+- **List**/**Post** properties for others to rent and make them visible to tenants, or **delist** them to hide them
 - Edit or remove properties you own
 - Review tenant applications and **approve** or ignore them
 - View all your active rental contracts
@@ -63,13 +46,13 @@ property-management/
 │   ├── property.h    # Defines Property, Owner, Tenant, Contract, Date
 │   ├── registry.h    # Defines the registry classes that store all data
 │   ├── display.h     # Declares all screen/UI functions
-│   └── session.h     # Declares all session and routing functions
+│   └── session.h     # Declares all functions for what happens on all session
 ├── src/              # Source files — the actual logic
 │   ├── main.cpp      # Starting point of the program
-│   ├── property.cpp  # Owner's addProperty and removeProperty methods
-│   ├── registry.cpp  # How data is stored, found, and managed
-│   ├── display.cpp   # Everything you see on the screen
-│   └── session.cpp   # What happens when you pick a menu option
+│   ├── property.cpp  # implementation for methods(functions) declared in property.h
+│   ├── registry.cpp  # implementations for methods declared in registry.h
+│   ├── display.cpp   # Outputs everything you see on the screen
+│   └── session.cpp   # What happens when you pick a menu option(session)/implementation of functions declared in session.h
 └── bin/              # Where the compiled program goes
 ```
 
@@ -91,7 +74,7 @@ The program is split into three clear responsibilities:
 
 There are four main "things" (classes) the system keeps track of:
 
-### 🏡 Property
+### Property
 Represents a single rental unit an owner adds to the system.
 
 | Field | What it means |
