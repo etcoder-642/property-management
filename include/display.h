@@ -44,5 +44,4 @@ int receiveData();
 vector<string> newPropertyForm();
 vector<string> propertyApplicationForm();
 
-
 #endif

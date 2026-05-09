@@ -58,7 +58,7 @@ void printKeyValue(string key, string value, int width, string color)
 
     cout << BORDER << "│ " << color << left << setw(keyColWidth) << key
          << "| " << CONTENT << setw(valueColWidth) << value
-         << BORDER << "│\n" << RESET << endl;
+         << BORDER << "│\n" << RESET;
 }
 
 // prints a straight line with given width
@@ -79,7 +79,7 @@ void printOpenBox(string content, int width, string color)
     cout << BORDER << "│ " << color << content;
     for (int i = 0; i < width - 3 - content.size(); i++)
         cout << " ";
-    cout << BORDER << "│\n";
+    cout << BORDER << "│\n" << RESET;
 }
 
 // pauses code execution

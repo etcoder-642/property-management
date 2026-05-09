@@ -53,7 +53,7 @@ public:
 class ContractRegistry {
 private:
     vector<Contract> contracts;
-    int nextID = -1;
+    int nextID = 0;
 public:
     ContractRegistry() {}
     vector<Contract> getContracts() const {return contracts; }

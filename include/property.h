@@ -132,6 +132,4 @@ public:
     void setIsActive(bool value) {isActive = value; }
 };
 
-
-
 #endif // PROPERTY_H
