@@ -19,4 +19,6 @@ int main()
         choice = initialPage();
         routeMainMenuChoice(choice, registry);
     }
+    registry.propertyRegistry.saveToFile();
+    return 0;
 }

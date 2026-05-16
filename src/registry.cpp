@@ -3,6 +3,8 @@
 #include <vector>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
+#include <direct.h>
 
 #include "../include/registry.h"
 
@@ -15,10 +17,12 @@ int OwnerRegistry::addOwner(Owner &owner)
     return owner.getOwnerID();
 }
 
-Owner* OwnerRegistry::verifyData(vector<string> input)
+Owner *OwnerRegistry::verifyData(vector<string> input)
 {
-    for(int i = 0; i < owners.size(); i++){
-        if(owners[i].getName() == input[0] && owners[i].getPassword() == input[1]){
+    for (int i = 0; i < owners.size(); i++)
+    {
+        if (owners[i].getName() == input[0] && owners[i].getPassword() == input[1])
+        {
             return &owners[i];
         }
     }
@@ -32,10 +36,12 @@ int TenantRegistry::addTenant(Tenant &tenant)
     return tenant.getTenantID();
 }
 
-Tenant* TenantRegistry::verifyData(vector<string> input)
+Tenant *TenantRegistry::verifyData(vector<string> input)
 {
-    for(int i = 0; i < tenants.size(); i++){
-        if(tenants[i].getName() == input[0] && tenants[i].getPassword() == input[1]){
+    for (int i = 0; i < tenants.size(); i++)
+    {
+        if (tenants[i].getName() == input[0] && tenants[i].getPassword() == input[1])
+        {
             return &tenants[i];
         }
     }
@@ -81,8 +87,6 @@ bool ContractRegistry::activateContractByID(int contractID)
     return false;
 }
 
-
-
 Tenant *TenantRegistry::getTenantByID(int tenantID)
 {
     for (Tenant &t : tenants)
@@ -94,8 +98,6 @@ Tenant *TenantRegistry::getTenantByID(int tenantID)
     }
     return nullptr;
 }
-
-
 
 Property *PropertyRegistry::getPropertyByID(int propertyID)
 {
@@ -172,4 +174,71 @@ vector<string> PropertyRegistry::getFormattedPropertyData(int id)
     int tempArea = prop->getArea();
     int tempRentalValue = prop->getRentalValue();
     return {tempLocation, tempType, tempDesc, to_string(tempRentalValue), to_string(tempArea), to_string(id)};
+}
+void PropertyRegistry::saveToFile()
+{
+    _mkdir("data");
+    ofstream file("data/property.txt");
+    for (Property p : properties)
+    {
+        file
+            << p.getPropertyID() << ","
+            << p.getOwnerID() << ","
+            << p.getTenantID() << ","
+            << p.getIsListed() << ","
+            << p.getIsRented() << ","
+            << p.getType() << ","
+            << p.getLocation() << ","
+            << p.getDescription() << ","
+            << p.getArea() << ","
+            << p.getRentalValue() << ","
+            << p.getMaintenanceStatus()
+            << endl;
+    }
+
+    file.close();
+}
+void PropertyRegistry::loadFromFile()
+{
+    ifstream file("data/property.txt");
+
+    if (!file.is_open())
+        return;
+
+    string line;
+
+    while (getline(file, line))
+    {
+        stringstream ss(line);
+
+        vector<string> data;
+        string value;
+
+        while (getline(ss, value, ','))
+        {
+            data.push_back(value);
+        }
+
+        if (data.size() < 11)
+            continue;
+
+        Property p(
+            stoi(data[1]), // ownerID
+            stoi(data[2]), // tenantID
+            stoi(data[3]), // isListed
+            stoi(data[4]), // isRented
+            data[5],       // type
+            data[6],       // location
+            data[7],       // description
+            stoi(data[8]), // area
+            stoi(data[9]), // rentalValue
+            data[10]       // maintenance
+        );
+
+        p.setPropertyID(stoi(data[0]));
+
+        properties.push_back(p);
+    }
+
+    file.close();
 }
