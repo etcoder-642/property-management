@@ -18,6 +18,8 @@ public:
     vector<Owner> &getOwners() { return owners; }
     int addOwner(Owner &owner);
     Owner *verifyData(vector<string> input);
+    void saveToFile();
+    void loadFromFile();
 };
 
 class TenantRegistry
@@ -34,6 +36,8 @@ public:
     Tenant *getTenantByID(int tenantID);
     int addTenant(Tenant &tenant);
     Tenant *verifyData(vector<string> input);
+    void saveToFile();
+    void loadFromFile();
 };
 
 class PropertyRegistry
@@ -71,6 +75,8 @@ public:
     bool activateContractByID(int contractID);
 
     int addContract(Contract &contract);
+    void saveToFile();
+    void loadFromFile();
 };
 
 struct AppRegistry
